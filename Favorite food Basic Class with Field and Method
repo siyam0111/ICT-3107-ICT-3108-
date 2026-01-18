@@ -1,0 +1,12 @@
+class FavouriteFood {
+    String food = "Khichuri";   // field
+
+    void displayFood() {
+        System.out.println("My favourite food is: " + food);
+    }
+
+    public static void main(String[] args) {
+        FavouriteFood obj = new FavouriteFood();
+        obj.displayFood();
+    }
+}
