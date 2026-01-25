@@ -1,0 +1,19 @@
+// Car.java
+public class Car {
+    String color;
+    int speed;
+
+    void drive() {
+        System.out.println("Car is driving at " + speed + " km/h with color " + color);
+    }
+}
+
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        Car myCar = new Car();
+        myCar.color = "Blue";
+        myCar.speed = 120;
+        myCar.drive();
+    }
+}
