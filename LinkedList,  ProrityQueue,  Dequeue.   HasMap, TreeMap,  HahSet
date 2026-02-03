@@ -1,0 +1,49 @@
+import java.util.*;
+
+public class DataStructureComparison {
+    public static void main(String[] args) {
+        // LinkedList Example
+        LinkedList<String> linkedList = new LinkedList<>();
+        linkedList.add("A");
+        linkedList.add("B");
+        linkedList.addFirst("Start");
+        linkedList.addLast("End");
+        System.out.println("LinkedList: " + linkedList);
+
+        // PriorityQueue Example (min-heap)
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        pq.add(10);
+        pq.add(5);
+        pq.add(20);
+        System.out.println("PriorityQueue (poll gives smallest): " + pq.poll());
+
+        // Deque Example
+        Deque<String> deque = new ArrayDeque<>();
+        deque.addFirst("Front");
+        deque.addLast("Back");
+        System.out.println("Deque: " + deque);
+        System.out.println("Deque removeFirst: " + deque.removeFirst());
+        System.out.println("Deque removeLast: " + deque.removeLast());
+
+        // HashMap Example
+        HashMap<Integer, String> hashMap = new HashMap<>();
+        hashMap.put(101, "HR");
+        hashMap.put(102, "Finance");
+        hashMap.put(103, "IT");
+        System.out.println("HashMap (unordered): " + hashMap);
+
+        // TreeMap Example
+        TreeMap<Integer, String> treeMap = new TreeMap<>();
+        treeMap.put(101, "HR");
+        treeMap.put(102, "Finance");
+        treeMap.put(103, "IT");
+        System.out.println("TreeMap (sorted by key): " + treeMap);
+
+        // HashSet Example
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.add("Apple");
+        hashSet.add("Banana");
+        hashSet.add("Apple"); // duplicate ignored
+        System.out.println("HashSet (unique, unordered): " + hashSet);
+    }
+}
