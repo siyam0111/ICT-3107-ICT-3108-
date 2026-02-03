@@ -1,0 +1,108 @@
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import java.sql.*;
+
+public class QuizApp extends Application {
+    private String studentId;
+    private int score = 0;
+    private int currentQuestion = 0;
+
+    // Bangla Questions (High School Standard)
+    private String[] questions = {
+        "প্রশ্ন ১: 15 ÷ 3 = ?",
+        "প্রশ্ন ২: বাংলাদেশের জাতীয় ফুল কোনটি?"
+    };
+
+    private String[][] options = {
+        {"2", "3", "4", "5"},
+        {"গোলাপ", "শাপলা", "জবা", "টিউলিপ"}
+    };
+
+    private int[] answers = {2, 1}; // correct option index (0-based)
+
+    @Override
+    public void start(Stage stage) {
+        TextField idField = new TextField();
+        idField.setPromptText("আপনার Student ID লিখুন");
+
+        Button startBtn = new Button("Start Quiz");
+        Label msg = new Label();
+
+        startBtn.setOnAction(e -> {
+            studentId = idField.getText();
+            if (validateStudent(studentId)) {
+                showQuestion(stage);
+            } else {
+                msg.setText("Student ID পাওয়া যায়নি!");
+            }
+        });
+
+        VBox root = new VBox(10, idField, startBtn, msg);
+        stage.setScene(new Scene(root, 400, 200));
+        stage.setTitle("Bangla Quiz Game");
+        stage.show();
+    }
+
+    private void showQuestion(Stage stage) {
+        if (currentQuestion < questions.length) {
+            Label qLabel = new Label(questions[currentQuestion]);
+            ToggleGroup group = new ToggleGroup();
+            VBox optionsBox = new VBox(5);
+
+            for (int i = 0; i < 4; i++) {
+                RadioButton rb = new RadioButton(options[currentQuestion][i]);
+                rb.setToggleGroup(group);
+                rb.setUserData(i);
+                optionsBox.getChildren().add(rb);
+            }
+
+            Button nextBtn = new Button("Next");
+            nextBtn.setOnAction(e -> {
+                if (group.getSelectedToggle() != null) {
+                    int selected = (int) group.getSelectedToggle().getUserData();
+                    if (selected == answers[currentQuestion]) score++;
+                    currentQuestion++;
+                    showQuestion(stage);
+                }
+            });
+
+            VBox root = new VBox(10, qLabel, optionsBox, nextBtn);
+            stage.setScene(new Scene(root, 400, 250));
+        } else {
+            saveScore(studentId, score);
+            Label result = new Label("আপনার স্কোর: " + score + "/" + questions.length);
+            VBox root = new VBox(10, result);
+            stage.setScene(new Scene(root, 300, 200));
+        }
+    }
+
+    private boolean validateStudent(String id) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quizdb", "root", "password")) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM student WHERE student_id=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void saveScore(String id, int marks) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quizdb", "root", "password")) {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO score(student_id, marks) VALUES(?,?)");
+            ps.setString(1, id);
+            ps.setInt(2, marks);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
